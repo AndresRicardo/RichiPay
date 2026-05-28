@@ -1,14 +1,14 @@
 function ObligationModal({ isOpen, onClose, onSave, initialData }) {
   const isEdit = Boolean(initialData)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.target)
+  const handleSubmit = () => {
+    const form = document.getElementById('obligation-form')
+    const formData = new FormData(form)
     const name = formData.get('name')
     const amount = Number(formData.get('amount'))
     const dueDay = Number(formData.get('dueDay'))
     onSave(name, amount, dueDay)
-    e.target.reset()
+    form.reset()
     onClose()
   }
 
@@ -20,7 +20,7 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
         className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-xl w-full max-w-md shadow-xl">
+      <div className="relative bg-white rounded-xl w-full max-w-md shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center p-4 border-b border-gray-100">
           <h3 className="text-lg font-semibold text-gray-800">
             {isEdit ? 'Editar obligación' : 'Nueva obligación'}
@@ -32,7 +32,7 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
             ×
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form id="obligation-form" className="p-4 space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Nombre
@@ -87,7 +87,8 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
               Cancelar
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className="flex-1 px-4 py-2 text-white bg-[#10b981] rounded-lg hover:bg-emerald-600 transition-colors"
             >
               {isEdit ? 'Guardar' : 'Crear'}

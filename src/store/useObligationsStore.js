@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 
 const useObligationsStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       obligations: [],
 
       addObligation: (name, amount, dueDay) => {
