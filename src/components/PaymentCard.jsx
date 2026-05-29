@@ -1,17 +1,27 @@
-function PaymentCard({ name, amount, dueDay, isPaid, onToggle, onEdit, onDelete }) {
-	console.log('[PAYMENT_CARD] Render:', { name, amount, dueDay, isPaid })
+function PaymentCard({ name, amount, dueDay, type, isPaid, onToggle, onEdit, onDelete }) {
+	console.log('[PAYMENT_CARD] Render:', { name, amount, dueDay, type, isPaid })
 
 	return (
 		<div className={`bg-white rounded-xl p-4 shadow-sm border ${isPaid ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-100'}`}>
 			<div className="flex justify-between items-start">
-				<div>
+				<div className="flex items-center gap-2">
 					<p className="font-medium text-gray-800">{name}</p>
-					<p className="text-sm text-gray-500 mt-1">Día {dueDay}</p>
+					<span
+						className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
+							type === 'occasional'
+								? 'bg-amber-100 text-amber-700'
+								: 'bg-blue-100 text-blue-700'
+						}`}
+						title={type === 'occasional' ? 'Ocasional' : 'Recurrente'}
+					>
+						{type === 'occasional' ? 'O' : 'R'}
+					</span>
 				</div>
 				<p className="text-lg font-semibold text-[#2563eb]">
 					${amount.toLocaleString("es-CO")}
 				</p>
 			</div>
+			<p className="text-sm text-gray-500 mt-1">Día {dueDay}</p>
 			<div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
 				<button
 					onClick={onToggle}

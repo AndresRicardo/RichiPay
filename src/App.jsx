@@ -56,12 +56,12 @@ function App() {
     setEditingObligation(null)
   }
 
-  const handleSave = (name, amount, dueDay) => {
-    console.log('[APP] Save obligation:', { name, amount, dueDay, isEdit: Boolean(editingObligation), editingId: editingObligation?.id })
+  const handleSave = (name, amount, dueDay, type, startMonth, applicableMonths) => {
+    console.log('[APP] Save obligation:', { name, amount, dueDay, type, startMonth, applicableMonths, isEdit: Boolean(editingObligation), editingId: editingObligation?.id })
     if (editingObligation) {
-      editObligation(editingObligation.id, name, amount, dueDay)
+      editObligation(editingObligation.id, name, amount, dueDay, type, startMonth, applicableMonths)
     } else {
-      addObligation(name, amount, dueDay)
+      addObligation(name, amount, dueDay, type, startMonth, applicableMonths)
     }
   }
 

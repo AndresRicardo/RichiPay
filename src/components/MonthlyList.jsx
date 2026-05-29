@@ -1,19 +1,20 @@
 import PaymentCard from './PaymentCard'
-import useObligationsStore from '../store/useObligationsStore'
-
-function getMonthKey(date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  return `${year}-${month}`
-}
+import useObligationsStore, { getMonthKey } from '../store/useObligationsStore'
 
 function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
   const obligations = useObligationsStore((state) => state.obligations)
   const payments = useObligationsStore((state) => state.payments)
+  const shouldShowObligation = useObligationsStore((state) => state.shouldShowObligation)
   const monthName = currentDate.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
   const monthKey = getMonthKey(currentDate)
 
-  console.log('[LIST] Rendering:', obligations.length, 'obligations for', monthName, '| monthKey:', monthKey)
+  console.log('[LIST] Rendering for', monthName, '| monthKey:', monthKey)
+
+  const visibleObligations = obligations.filter((ob) =>
+    shouldShowObligation(ob, currentDate)
+  )
+
+  console.log('[LIST] Visible obligations:', visibleObligations.length, 'of', obligations.length)
 
   const isPaid = (obligationId) => {
     const payment = payments.find(
@@ -24,7 +25,7 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
 
   return (
     <section className="max-w-lg mx-auto px-4 py-6 flex-1">
-      {obligations.length === 0 ? (
+      {visibleObligations.length === 0 ? (
         <div className="bg-white rounded-xl p-8 text-center shadow-sm border border-gray-100">
           <p className="text-gray-500 mb-2">Sin obligaciones este mes</p>
           <p className="text-sm text-gray-400">
@@ -33,12 +34,13 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
         </div>
       ) : (
         <div className="space-y-3">
-          {obligations.map((obligation) => (
+          {visibleObligations.map((obligation) => (
             <PaymentCard
               key={obligation.id}
               name={obligation.name}
               amount={obligation.amount}
               dueDay={obligation.dueDay}
+              type={obligation.type}
               isPaid={isPaid(obligation.id)}
               onEdit={() => onEdit(obligation)}
               onDelete={() => onDelete(obligation.id)}
@@ -51,5 +53,4 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
   )
 }
 
-export { getMonthKey }
 export default MonthlyList
