@@ -4,12 +4,14 @@ import MonthNavigator from './components/MonthNavigator'
 import MonthlyList from './components/MonthlyList'
 import FloatingButton from './components/FloatingButton'
 import ObligationModal from './components/ObligationModal'
+import HistoryView from './components/HistoryView'
 import useObligationsStore from './store/useObligationsStore'
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingObligation, setEditingObligation] = useState(null)
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   const addObligation = useObligationsStore((state) => state.addObligation)
   const editObligation = useObligationsStore((state) => state.editObligation)
@@ -72,6 +74,21 @@ function App() {
     }
   }
 
+  const handleOpenHistory = () => {
+    console.log('[APP] Open history')
+    setHistoryOpen(true)
+  }
+
+  const handleCloseHistory = () => {
+    console.log('[APP] Close history')
+    setHistoryOpen(false)
+  }
+
+  const handleNavigateToMonth = (year, month) => {
+    console.log('[APP] Navigate to month:', year, month)
+    setCurrentDate(new Date(year, month - 1, 1))
+  }
+
   return (
     <>
       <Header />
@@ -80,6 +97,7 @@ function App() {
           currentDate={currentDate}
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
+          onOpenHistory={handleOpenHistory}
         />
         <MonthlyList
           currentDate={currentDate}
@@ -94,6 +112,11 @@ function App() {
         onClose={handleClose}
         onSave={handleSave}
         initialData={editingObligation}
+      />
+      <HistoryView
+        isOpen={historyOpen}
+        onClose={handleCloseHistory}
+        onNavigateToMonth={handleNavigateToMonth}
       />
     </>
   )

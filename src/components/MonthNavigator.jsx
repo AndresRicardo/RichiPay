@@ -1,4 +1,4 @@
-function MonthNavigator({ currentDate, onPrevMonth, onNextMonth }) {
+function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory }) {
   const monthName = currentDate.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
   console.log('[NAVIGATOR] Current month:', monthName)
 
@@ -16,15 +16,27 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth }) {
       <h2 className="text-lg font-semibold text-gray-700 capitalize">
         {monthName}
       </h2>
-      <button
-        onClick={onNextMonth}
-        className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
-        aria-label="Mes siguiente"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onOpenHistory}
+          className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label="Ver historial"
+          title="Historial"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </button>
+        <button
+          onClick={onNextMonth}
+          className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label="Mes siguiente"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }
