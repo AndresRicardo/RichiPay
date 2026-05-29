@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Header from './components/Header'
+import MonthNavigator from './components/MonthNavigator'
 import MonthlyList from './components/MonthlyList'
 import FloatingButton from './components/FloatingButton'
 import ObligationModal from './components/ObligationModal'
@@ -8,17 +9,44 @@ import useObligationsStore from './store/useObligationsStore'
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingObligation, setEditingObligation] = useState(null)
+  const [currentDate, setCurrentDate] = useState(new Date())
 
   const addObligation = useObligationsStore((state) => state.addObligation)
   const editObligation = useObligationsStore((state) => state.editObligation)
   const removeObligation = useObligationsStore((state) => state.removeObligation)
+  const togglePayment = useObligationsStore((state) => state.togglePayment)
+
+  const handlePrevMonth = () => {
+    console.log('[APP] Prev month')
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev)
+      newDate.setMonth(newDate.getMonth() - 1)
+      return newDate
+    })
+  }
+
+  const handleNextMonth = () => {
+    console.log('[APP] Next month')
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev)
+      newDate.setMonth(newDate.getMonth() + 1)
+      return newDate
+    })
+  }
+
+  const handleTogglePayment = (obligationId, monthKey) => {
+    console.log('[APP] Toggle payment:', { obligationId, monthKey })
+    togglePayment(obligationId, monthKey)
+  }
 
   const handleOpenCreate = () => {
+    console.log('[APP] Open create modal')
     setEditingObligation(null)
     setModalOpen(true)
   }
 
   const handleOpenEdit = (obligation) => {
+    console.log('[APP] Open edit modal:', obligation)
     setEditingObligation(obligation)
     setModalOpen(true)
   }
@@ -29,6 +57,7 @@ function App() {
   }
 
   const handleSave = (name, amount, dueDay) => {
+    console.log('[APP] Save obligation:', { name, amount, dueDay, isEdit: Boolean(editingObligation), editingId: editingObligation?.id })
     if (editingObligation) {
       editObligation(editingObligation.id, name, amount, dueDay)
     } else {
@@ -37,6 +66,7 @@ function App() {
   }
 
   const handleDelete = (id) => {
+    console.log('[APP] Delete obligation:', id)
     if (window.confirm('¿Eliminar esta obligación?')) {
       removeObligation(id)
     }
@@ -46,7 +76,17 @@ function App() {
     <>
       <Header />
       <main className="flex-1 flex flex-col">
-        <MonthlyList onEdit={handleOpenEdit} onDelete={handleDelete} />
+        <MonthNavigator
+          currentDate={currentDate}
+          onPrevMonth={handlePrevMonth}
+          onNextMonth={handleNextMonth}
+        />
+        <MonthlyList
+          currentDate={currentDate}
+          onEdit={handleOpenEdit}
+          onDelete={handleDelete}
+          onTogglePayment={handleTogglePayment}
+        />
       </main>
       <FloatingButton onClick={handleOpenCreate} />
       <ObligationModal

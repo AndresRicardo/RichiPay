@@ -22,10 +22,11 @@ src/
 │   ├── Header.jsx          # Header principal con título
 │   ├── MonthlyList.jsx     # Lista mensual de obligaciones
 │   ├── PaymentCard.jsx     # Tarjeta individual de obligación
-│   └── FloatingButton.jsx  # Botón flotante para agregar
+│   ├── FloatingButton.jsx  # Botón flotante para agregar
+│   └── MonthNavigator.jsx  # Navegación entre meses (FASE 3)
 ├── store/
-│   └── useObligationsStore.js  # Store Zustand (FASE 2+)
-├── App.jsx                 # Componente raíz y layout
+│   └── useObligationsStore.js  # Store Zustand con payments (FASE 3)
+├── App.jsx                 # Componente raíz con navegación de meses
 ├── index.css               # Tailwind + variables CSS
 └── main.jsx                # Entry point
 ```
@@ -44,30 +45,46 @@ src/
 
 1. **TailwindCSS v4** con plugin `@tailwindcss/vite` (no config file tradicional)
 2. **Zustand con middleware `persist`** para sincronizar con localStorage automáticamente
-3. **ID con `crypto.randomUUID()`** para obligaciones únicas
+3. **ID con `uuid` v4** para obligaciones únicas
 4. **Modal simple en lugar de librería externa** para mantener minimalismo
 5. **Estructura plana** de componentes (sin sub-carpetas excesivas)
+6. **monthKey** como string "YYYY-MM" para identificar meses sin ambigüedad
+7. **Sistema payments** separado de obligations para rastrear pago por mes
+
+## Estructuras de datos
+
+**Obligation:**
+```js
+{ id, name, amount, dueDay }
+```
+
+**Payment:**
+```js
+{ id, obligationId, monthKey: "YYYY-MM", paid: boolean, paidAt: ISO date | null }
+```
 
 ## Fases del proyecto
 
 | Fase | Estado | Descripción |
 |------|--------|-------------|
 | FASE 1 | ✅ Completada | Layout inicial, header, diseño mobile-first |
-| FASE 2 | 🔄 En desarrollo | CRUD obligaciones con Zustand + localStorage |
-| FASE 3 | ⏳ Pendiente | Generación de listado mensual |
+| FASE 2 | ✅ Completada | CRUD obligaciones con Zustand + localStorage |
+| FASE 3 | ✅ Completada | Navegación entre meses + marcar pagada |
 | FASE 4 | ⏳ Pendiente | Historial y consulta de meses anteriores |
 
 ## Estado actual del desarrollo
 
-**FASE 2 - CRUD de Obligaciones** (en progreso)
+**FASE 3 - Navegación entre meses y pagos** (completada)
 
-### Completado en FASE 2
-- Store Zustand con localStorage
-- Modal para crear/editar obligaciones
-- Conexión FloatingButton → Modal
-- PaymentCard con acciones editar/eliminar
+### Completado en FASE 3
+- Estado `currentDate` en App.jsx para mes seleccionado
+- `MonthNavigator` con botones prev/next
+- Sistema de `payments` en store (obligacionId + monthKey + paid + paidAt)
+- `togglePayment(obligationId, monthKey)` en store
+- Botón "Marcar pagada" en PaymentCard con estilo visual (borde verde, fondo verde claro)
+- `getMonthKey(date)` helper exportado desde MonthlyList
 
-### Pendiente en FASE 2
+### Pendiente en FASE 3
 - Ninguno
 
 ## Funcionalidades implementadas
@@ -78,22 +95,24 @@ src/
 4. Store de obligaciones con persistencia en localStorage
 5. Modal de creación y edición de obligaciones
 6. Eliminar obligación
+7. Navegación entre meses (prev/next)
+8. Marcar obligación como pagada por mes
 
 ## Funcionalidades pendientes
 
-1. Marcar obligación como pagada
-2. Generación de listado mensual (filtrar por mes)
-3. Navegación entre meses
-4. Historial de meses anteriores
+1. ~~Marcar obligación como pagada~~ ✅
+2. ~~Generación de listado mensual~~ ✅
+3. ~~Navegación entre meses~~ ✅
+4. Historial de meses anteriores (ver todos los meses con sus estados de pago)
 5. Persistencia más robusta (backend futuro)
 6. Autenticación de usuarios
 
 ## Próximos pasos sugeridos
 
-1. **FASE 2.1**: Conectar el edit desde PaymentCard al modal (pasando datos)
-2. **FASE 3**: Implementar selector de mes y filtrado de obligaciones por mes
-3. **FASE 4**: Agregar paginación/consulta de historial de meses
-4. Considerar: validación de formulario (nombre requerido, valor > 0, día 1-31)
+1. **FASE 4**: Implementar vista de historial con resumen de pagos por mes
+2. Considerar: validación de formulario (nombre requerido, valor > 0, día 1-31)
+3. Considerar: exportar datos a CSV o PDF
+4. Considerar: notificaciones derecordatorio de pago
 
 ## Paleta de colores
 

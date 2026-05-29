@@ -1,5 +1,6 @@
 function ObligationModal({ isOpen, onClose, onSave, initialData }) {
   const isEdit = Boolean(initialData)
+  console.log('[MODAL] Opening:', isEdit ? 'EDIT' : 'CREATE', initialData)
 
   const handleSubmit = () => {
     const form = document.getElementById('obligation-form')
@@ -7,6 +8,7 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
     const name = formData.get('name')
     const amount = Number(formData.get('amount'))
     const dueDay = Number(formData.get('dueDay'))
+    console.log('[MODAL] Submit:', { name, amount, dueDay })
     onSave(name, amount, dueDay)
     form.reset()
     onClose()
