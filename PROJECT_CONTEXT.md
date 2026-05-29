@@ -23,9 +23,10 @@ src/
 │   ├── MonthlyList.jsx     # Lista mensual de obligaciones
 │   ├── PaymentCard.jsx     # Tarjeta individual de obligación
 │   ├── FloatingButton.jsx  # Botón flotante para agregar
-│   └── MonthNavigator.jsx  # Navegación entre meses (FASE 3)
+│   ├── MonthNavigator.jsx  # Navegación entre meses
+│   └── ObligationModal.jsx # Modal crear/editar obligación
 ├── store/
-│   └── useObligationsStore.js  # Store Zustand con payments (FASE 3)
+│   └── useObligationsStore.js  # Store Zustand con payments y lógica de filtrado
 ├── App.jsx                 # Componente raíz con navegación de meses
 ├── index.css               # Tailwind + variables CSS
 └── main.jsx                # Entry point
@@ -50,17 +51,32 @@ src/
 5. **Estructura plana** de componentes (sin sub-carpetas excesivas)
 6. **monthKey** como string "YYYY-MM" para identificar meses sin ambigüedad
 7. **Sistema payments** separado de obligations para rastrear pago por mes
+8. **Tipos de obligación**: `recurring` (se muestra desde startMonth en adelante) y `occasional` (meses específicos)
 
 ## Estructuras de datos
 
 **Obligation:**
 ```js
-{ id, name, amount, dueDay }
+{
+  id, name, amount, dueDay,
+  type: 'recurring' | 'occasional',
+  startMonth: 'YYYY-MM',
+  applicableMonths: [1,2,3...] // solo para occasional
+}
 ```
 
 **Payment:**
 ```js
 { id, obligationId, monthKey: "YYYY-MM", paid: boolean, paidAt: ISO date | null }
+```
+
+## Lógica de filtrado
+
+```
+shouldShowObligation(obligation, currentDate):
+  1. Si currentMonthKey < startMonth → NO mostrar
+  2. Si type === 'recurring' → MOSTRAR
+  3. Si type === 'occasional' → MOSTRAR solo si currentMonthNumber ∈ applicableMonths
 ```
 
 ## Fases del proyecto
@@ -74,20 +90,9 @@ src/
 
 ## Estado actual del desarrollo
 
-**FASE 3 - Navegación entre meses y pagos** (completada)
+**Último commit**: `feat: obligaciones recurrentes y ocasionales con filtrado por mes`
 
-### Completado en FASE 3
-- Estado `currentDate` en App.jsx para mes seleccionado
-- `MonthNavigator` con botones prev/next
-- Sistema de `payments` en store (obligacionId + monthKey + paid + paidAt)
-- `togglePayment(obligationId, monthKey)` en store
-- Botón "Marcar pagada" en PaymentCard con estilo visual (borde verde, fondo verde claro)
-- `getMonthKey(date)` helper exportado desde MonthlyList
-
-### Pendiente en FASE 3
-- Ninguno
-
-## Funcionalidades implementadas
+### Funcionalidades implementadas
 
 1. Layout responsive con header y contenedor principal
 2. Botón flotante "+" para agregar obligación
@@ -97,22 +102,27 @@ src/
 6. Eliminar obligación
 7. Navegación entre meses (prev/next)
 8. Marcar obligación como pagada por mes
+9. Tipos de obligación: **Recurrente** (se muestra desde startMonth en adelante) y **Ocasional** (meses específicos con checkboxes)
+10. Badge visual en tarjetas indicando tipo (R=Recurrente, O=Ocasional)
+11. startMonth editable para obligaciones recurrentes
+12. applicableMonths editable para obligaciones ocasionales
 
 ## Funcionalidades pendientes
 
 1. ~~Marcar obligación como pagada~~ ✅
 2. ~~Generación de listado mensual~~ ✅
 3. ~~Navegación entre meses~~ ✅
-4. Historial de meses anteriores (ver todos los meses con sus estados de pago)
-5. Persistencia más robusta (backend futuro)
-6. Autenticación de usuarios
+4. Tipos de obligación (recurrente/ocasional) ✅
+5. Historial de meses anteriores (ver todos los meses con sus estados de pago)
+6. Persistencia más robusta (backend futuro)
+7. Autenticación de usuarios
 
 ## Próximos pasos sugeridos
 
 1. **FASE 4**: Implementar vista de historial con resumen de pagos por mes
 2. Considerar: validación de formulario (nombre requerido, valor > 0, día 1-31)
 3. Considerar: exportar datos a CSV o PDF
-4. Considerar: notificaciones derecordatorio de pago
+4. Considerar: notificaciones de recordatorio de pago
 
 ## Paleta de colores
 
@@ -124,4 +134,6 @@ src/
 --color-text: #374151       /* Gris texto principal */
 --color-text-light: #6b7280 /* Gris texto secundario */
 --color-amount: #2563eb     /* Azul valores/precios */
+--color-recurring: #2563eb  /* Azul para badge Recurrente */
+--color-occasional: #f59e0b /* Amber para badge Ocasional */
 ```
