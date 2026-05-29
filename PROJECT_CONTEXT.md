@@ -24,7 +24,8 @@ src/
 │   ├── PaymentCard.jsx     # Tarjeta individual de obligación
 │   ├── FloatingButton.jsx  # Botón flotante para agregar
 │   ├── MonthNavigator.jsx  # Navegación entre meses
-│   └── ObligationModal.jsx # Modal crear/editar obligación
+│   ├── ObligationModal.jsx # Modal crear/editar obligación
+│   └── HistoryView.jsx     # Vista de historial con resumen por mes
 ├── store/
 │   └── useObligationsStore.js  # Store Zustand con payments y lógica de filtrado
 ├── App.jsx                 # Componente raíz con navegación de meses
@@ -86,11 +87,11 @@ shouldShowObligation(obligation, currentDate):
 | FASE 1 | ✅ Completada | Layout inicial, header, diseño mobile-first |
 | FASE 2 | ✅ Completada | CRUD obligaciones con Zustand + localStorage |
 | FASE 3 | ✅ Completada | Navegación entre meses + marcar pagada |
-| FASE 4 | ⏳ Pendiente | Historial y consulta de meses anteriores |
+| FASE 4 | ✅ Completada | Vista de historial con resumen de pagos por mes |
 
 ## Estado actual del desarrollo
 
-**Último commit**: `feat: obligaciones recurrentes y ocasionales con filtrado por mes`
+**Último commit**: `FASE 4: Vista de historial con resumen de pagos por mes`
 
 ### Funcionalidades implementadas
 
@@ -106,23 +107,24 @@ shouldShowObligation(obligation, currentDate):
 10. Badge visual en tarjetas indicando tipo (R=Recurrente, O=Ocasional)
 11. startMonth editable para obligaciones recurrentes
 12. applicableMonths editable para obligaciones ocasionales
+13. **Vista de historial** con resumen por mes (pagadas, pendientes, totales)
 
 ## Funcionalidades pendientes
 
 1. ~~Marcar obligación como pagada~~ ✅
 2. ~~Generación de listado mensual~~ ✅
 3. ~~Navegación entre meses~~ ✅
-4. Tipos de obligación (recurrente/ocasional) ✅
-5. Historial de meses anteriores (ver todos los meses con sus estados de pago)
+4. ~~Tipos de obligación (recurrente/ocasional)~~ ✅
+5. ~~Historial de meses anteriores~~ ✅
 6. Persistencia más robusta (backend futuro)
 7. Autenticación de usuarios
 
 ## Próximos pasos sugeridos
 
-1. **FASE 4**: Implementar vista de historial con resumen de pagos por mes
-2. Considerar: validación de formulario (nombre requerido, valor > 0, día 1-31)
-3. Considerar: exportar datos a CSV o PDF
-4. Considerar: notificaciones de recordatorio de pago
+1. Considerar: validación de formulario (nombre requerido, valor > 0, día 1-31)
+2. Considerar: exportar datos a CSV o PDF
+3. Considerar: notificaciones de recordatorio de pago
+4. Considerar: categorías o grupos de obligaciones
 
 ## Paleta de colores
 

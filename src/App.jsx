@@ -89,6 +89,11 @@ function App() {
     setCurrentDate(new Date(year, month - 1, 1))
   }
 
+  const handleGoToToday = (date = new Date()) => {
+    console.log('[APP] Go to today')
+    setCurrentDate(date)
+  }
+
   return (
     <>
       <Header />
@@ -98,6 +103,7 @@ function App() {
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
           onOpenHistory={handleOpenHistory}
+          onGoToToday={handleGoToToday}
         />
         <MonthlyList
           currentDate={currentDate}
