@@ -18,7 +18,7 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
 
   const isPaid = (obligationId) => {
     const payment = payments.find(
-      (p) => p.obligationId === obligationId && p.monthKey === monthKey
+      (p) => p.obligation_id === obligationId && p.month_key === monthKey
     )
     return payment?.paid || false
   }
@@ -39,7 +39,7 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
               key={obligation.id}
               name={obligation.name}
               amount={obligation.amount}
-              dueDay={obligation.dueDay}
+              dueDay={obligation.due_day}
               type={obligation.type}
               isPaid={isPaid(obligation.id)}
               onEdit={() => onEdit(obligation)}

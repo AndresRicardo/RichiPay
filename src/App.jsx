@@ -1,17 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import MonthNavigator from './components/MonthNavigator'
 import MonthlyList from './components/MonthlyList'
 import FloatingButton from './components/FloatingButton'
 import ObligationModal from './components/ObligationModal'
 import HistoryView from './components/HistoryView'
+import AuthModal from './components/AuthModal'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import useObligationsStore from './store/useObligationsStore'
 
-function App() {
+function AppContent() {
+  const { user, isAuthenticated } = useAuth()
   const [modalOpen, setModalOpen] = useState(false)
   const [editingObligation, setEditingObligation] = useState(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [historyOpen, setHistoryOpen] = useState(false)
+
+  const fetchData = useObligationsStore((state) => state.fetchData)
+  const clearData = useObligationsStore((state) => state.clearData)
+  const initialized = useObligationsStore((state) => state.initialized)
+
+  useEffect(() => {
+    console.log('[APP] User changed:', user?.email, 'authenticated:', isAuthenticated)
+    if (user) {
+      fetchData(user.id)
+    } else {
+      clearData()
+    }
+  }, [user, isAuthenticated])
 
   const addObligation = useObligationsStore((state) => state.addObligation)
   const editObligation = useObligationsStore((state) => state.editObligation)
@@ -94,6 +110,10 @@ function App() {
     setCurrentDate(date)
   }
 
+  if (!isAuthenticated) {
+    return <AuthModal />
+  }
+
   return (
     <>
       <Header />
@@ -125,6 +145,14 @@ function App() {
         onNavigateToMonth={handleNavigateToMonth}
       />
     </>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   )
 }
 
