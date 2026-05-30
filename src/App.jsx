@@ -6,6 +6,7 @@ import FloatingButton from './components/FloatingButton'
 import ObligationModal from './components/ObligationModal'
 import HistoryView from './components/HistoryView'
 import AuthModal from './components/AuthModal'
+import DeleteConfirmModal from './components/DeleteConfirmModal'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import useObligationsStore from './store/useObligationsStore'
 
@@ -15,6 +16,7 @@ function AppContent() {
   const [editingObligation, setEditingObligation] = useState(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [deleteModalData, setDeleteModalData] = useState({ open: false, obligation: null })
 
   const fetchData = useObligationsStore((state) => state.fetchData)
   const clearData = useObligationsStore((state) => state.clearData)
@@ -32,6 +34,8 @@ function AppContent() {
   const addObligation = useObligationsStore((state) => state.addObligation)
   const editObligation = useObligationsStore((state) => state.editObligation)
   const removeObligation = useObligationsStore((state) => state.removeObligation)
+  const hideObligationForMonth = useObligationsStore((state) => state.hideObligationForMonth)
+  const deleteFromMonth = useObligationsStore((state) => state.deleteFromMonth)
   const togglePayment = useObligationsStore((state) => state.togglePayment)
 
   const handlePrevMonth = () => {
@@ -83,11 +87,24 @@ function AppContent() {
     }
   }
 
-  const handleDelete = (id) => {
-    console.log('[APP] Delete obligation:', id)
-    if (window.confirm('¿Eliminar esta obligación?')) {
-      removeObligation(id)
-    }
+  const handleDeleteClick = (obligation) => {
+    console.log('[APP] Open delete modal for:', obligation.name)
+    setDeleteModalData({ open: true, obligation })
+  }
+
+  const handleDeleteCompletely = async (id) => {
+    console.log('[APP] Delete completely:', id)
+    await removeObligation(id)
+  }
+
+  const handleDeleteFromMonth = async (id, fromDate) => {
+    console.log('[APP] Delete from month:', id, fromDate)
+    await deleteFromMonth(id, fromDate)
+  }
+
+  const handleCloseDeleteModal = () => {
+    console.log('[APP] Close delete modal')
+    setDeleteModalData({ open: false, obligation: null })
   }
 
   const handleOpenHistory = () => {
@@ -128,7 +145,7 @@ function AppContent() {
         <MonthlyList
           currentDate={currentDate}
           onEdit={handleOpenEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
           onTogglePayment={handleTogglePayment}
         />
       </main>
@@ -143,6 +160,14 @@ function AppContent() {
         isOpen={historyOpen}
         onClose={handleCloseHistory}
         onNavigateToMonth={handleNavigateToMonth}
+      />
+      <DeleteConfirmModal
+        isOpen={deleteModalData.open}
+        onClose={handleCloseDeleteModal}
+        onDelete={handleDeleteCompletely}
+        onDeleteFromMonth={handleDeleteFromMonth}
+        obligation={deleteModalData.obligation}
+        currentDate={currentDate}
       />
     </>
   )

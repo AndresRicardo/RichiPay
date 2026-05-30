@@ -4,15 +4,24 @@ import useObligationsStore, { getMonthKey } from '../store/useObligationsStore'
 function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
   const obligations = useObligationsStore((state) => state.obligations)
   const payments = useObligationsStore((state) => state.payments)
+  const hiddenObligations = useObligationsStore((state) => state.hiddenObligations)
   const shouldShowObligation = useObligationsStore((state) => state.shouldShowObligation)
+  const isHidden = useObligationsStore((state) => state.isHidden)
   const monthName = currentDate.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
   const monthKey = getMonthKey(currentDate)
 
   console.log('[LIST] Rendering for', monthName, '| monthKey:', monthKey)
 
-  const visibleObligations = obligations.filter((ob) =>
-    shouldShowObligation(ob, currentDate)
-  )
+  const visibleObligations = obligations.filter((ob) => {
+    if (!shouldShowObligation(ob, currentDate)) {
+      return false
+    }
+    if (isHidden(ob.id, monthKey)) {
+      console.log('[LIST] Filtering hidden:', ob.name)
+      return false
+    }
+    return true
+  })
 
   console.log('[LIST] Visible obligations:', visibleObligations.length, 'of', obligations.length)
 
@@ -43,7 +52,7 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
               type={obligation.type}
               isPaid={isPaid(obligation.id)}
               onEdit={() => onEdit(obligation)}
-              onDelete={() => onDelete(obligation.id)}
+              onDelete={() => onDelete(obligation)}
               onToggle={() => onTogglePayment(obligation.id, monthKey)}
             />
           ))}

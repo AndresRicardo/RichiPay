@@ -8,9 +8,16 @@ function getMonthKey(date) {
   return `${year}-${month}`
 }
 
+function getNextMonthKey(date) {
+  const newDate = new Date(date)
+  newDate.setMonth(newDate.getMonth() + 1)
+  return getMonthKey(newDate)
+}
+
 const useObligationsStore = create((set, get) => ({
   obligations: [],
   payments: [],
+  hiddenObligations: [],
   loading: false,
   error: null,
   initialized: false,
@@ -20,7 +27,7 @@ const useObligationsStore = create((set, get) => ({
     set({ loading: true, error: null })
     
     try {
-      const [obligationsResult, paymentsResult] = await Promise.all([
+      const [obligationsResult, paymentsResult, hiddenResult] = await Promise.all([
         supabase
           .from('obligations')
           .select('*')
@@ -30,17 +37,27 @@ const useObligationsStore = create((set, get) => ({
           .from('payments')
           .select('*')
           .eq('user_id', userId)
-          .order('month_key', { ascending: true })
+          .order('month_key', { ascending: true }),
+        supabase
+          .from('hidden_obligations')
+          .select('*')
+          .eq('user_id', userId)
       ])
 
       if (obligationsResult.error) throw obligationsResult.error
       if (paymentsResult.error) throw paymentsResult.error
+      if (hiddenResult.error) throw hiddenResult.error
 
-      console.log('[STORE] Data fetched:', obligationsResult.data.length, 'obligations,', paymentsResult.data.length, 'payments')
+      console.log('[STORE] Data fetched:', {
+        obligations: obligationsResult.data.length,
+        payments: paymentsResult.data.length,
+        hidden: hiddenResult.data.length
+      })
       
       set({
         obligations: obligationsResult.data || [],
         payments: paymentsResult.data || [],
+        hiddenObligations: hiddenResult.data || [],
         loading: false,
         initialized: true
       })
@@ -132,10 +149,70 @@ const useObligationsStore = create((set, get) => ({
       
       set((state) => ({
         obligations: state.obligations.filter((ob) => ob.id !== id),
-        payments: state.payments.filter((p) => p.obligation_id !== id)
+        payments: state.payments.filter((p) => p.obligation_id !== id),
+        hiddenObligations: state.hiddenObligations.filter((h) => h.obligation_id !== id)
       }))
     } catch (err) {
       console.error('[STORE] removeObligation error:', err.message)
+      set({ error: err.message })
+    }
+  },
+
+  hideObligationForMonth: async (obligationId, monthKey) => {
+    const user = (await supabase.auth.getUser()).data.user
+    if (!user) {
+      console.error('[STORE] hideObligationForMonth: No user logged in')
+      return
+    }
+
+    console.log('[STORE] hideObligationForMonth:', { obligationId, monthKey })
+
+    try {
+      const hideEntry = {
+        id: uuidv4(),
+        user_id: user.id,
+        obligation_id: obligationId,
+        month_key: monthKey
+      }
+
+      const { data, error } = await supabase
+        .from('hidden_obligations')
+        .insert(hideEntry)
+        .select()
+        .single()
+
+      if (error) throw error
+      console.log('[STORE] hideObligationForMonth success:', data)
+      
+      set((state) => ({
+        hiddenObligations: [...state.hiddenObligations, data]
+      }))
+    } catch (err) {
+      console.error('[STORE] hideObligationForMonth error:', err.message)
+      set({ error: err.message })
+    }
+  },
+
+  deleteFromMonth: async (obligationId, fromDate) => {
+    console.log('[STORE] deleteFromMonth:', { obligationId, fromDate })
+    const nextMonthKey = getNextMonthKey(fromDate)
+
+    try {
+      const { data, error } = await supabase
+        .from('obligations')
+        .update({ start_month: nextMonthKey })
+        .eq('id', obligationId)
+        .select()
+        .single()
+
+      if (error) throw error
+      console.log('[STORE] deleteFromMonth success:', data)
+      
+      set((state) => ({
+        obligations: state.obligations.map((ob) => ob.id === obligationId ? data : ob)
+      }))
+    } catch (err) {
+      console.error('[STORE] deleteFromMonth error:', err.message)
       set({ error: err.message })
     }
   },
@@ -212,6 +289,13 @@ const useObligationsStore = create((set, get) => ({
     return payment?.paid || false
   },
 
+  isHidden: (obligationId, monthKey) => {
+    const { hiddenObligations } = get()
+    return hiddenObligations.some(
+      (h) => h.obligation_id === obligationId && h.month_key === monthKey
+    )
+  },
+
   shouldShowObligation: (obligation, currentDate) => {
     const monthKey = getMonthKey(currentDate)
     const currentYearMonth = monthKey
@@ -238,6 +322,7 @@ const useObligationsStore = create((set, get) => ({
     set({
       obligations: [],
       payments: [],
+      hiddenObligations: [],
       loading: false,
       error: null,
       initialized: false
