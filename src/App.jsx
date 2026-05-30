@@ -160,6 +160,7 @@ function AppContent() {
         onClose={handleClose}
         onSave={handleSave}
         initialData={editingObligation}
+        currentDate={currentDate}
       />
       <HistoryView
         isOpen={historyOpen}

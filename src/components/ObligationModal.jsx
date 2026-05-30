@@ -16,9 +16,9 @@ const MONTHS = [
   { value: 12, label: "Dic" },
 ]
 
-function ObligationModal({ isOpen, onClose, onSave, initialData }) {
+function ObligationModal({ isOpen, onClose, onSave, initialData, currentDate }) {
   const isEdit = Boolean(initialData)
-  console.log("[MODAL] Opening:", isEdit ? "EDIT" : "CREATE", initialData)
+  console.log("[MODAL] Opening:", isEdit ? "EDIT" : "CREATE", initialData, "| currentDate:", currentDate)
 
   const [type, setType] = useState("recurring")
   const [startMonth, setStartMonth] = useState("")
@@ -32,11 +32,11 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
         setApplicableMonths(initialData.applicable_months || [])
       } else {
         setType("recurring")
-        setStartMonth(getMonthKey(new Date()))
+        setStartMonth(getMonthKey(currentDate))
         setApplicableMonths([])
       }
     }
-  }, [isOpen, isEdit, initialData])
+  }, [isOpen, isEdit, initialData, currentDate])
 
   const handleMonthToggle = (month) => {
     setApplicableMonths((prev) =>
@@ -67,13 +67,13 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-100 sticky top-0 bg-white">
           <h3 className="text-lg font-semibold text-gray-800">
-            {isEdit ? "Editar obligación" : "Nueva obligación"}
+            {isEdit ? "Editar obligacion" : "Nueva obligacion"}
           </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
           >
-            ×
+            x
           </button>
         </div>
         <form id="obligation-form" className="p-4 space-y-4">
@@ -108,7 +108,7 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
           </div>
           <div>
             <label htmlFor="dueDay" className="block text-sm font-medium text-gray-700 mb-1">
-              Día límite de pago
+              Dia limite de pago
             </label>
             <input
               type="number"
