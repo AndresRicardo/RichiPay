@@ -195,12 +195,12 @@ const useObligationsStore = create((set, get) => ({
 
   deleteFromMonth: async (obligationId, fromDate) => {
     console.log('[STORE] deleteFromMonth:', { obligationId, fromDate })
-    const nextMonthKey = getNextMonthKey(fromDate)
+    const currentMonthKey = getMonthKey(fromDate)
 
     try {
       const { data, error } = await supabase
         .from('obligations')
-        .update({ start_month: nextMonthKey })
+        .update({ start_month: currentMonthKey })
         .eq('id', obligationId)
         .select()
         .single()
@@ -302,7 +302,14 @@ const useObligationsStore = create((set, get) => ({
     const startYearMonth = obligation.start_month
     const currentMonth = currentDate.getMonth() + 1
 
-    if (currentYearMonth < startYearMonth) {
+    console.log('[STORE] shouldShowObligation:', {
+      obligationName: obligation.name,
+      currentYearMonth,
+      startYearMonth,
+      result: currentYearMonth >= startYearMonth ? 'HIDE' : 'SHOW'
+    })
+
+    if (startYearMonth && currentYearMonth >= startYearMonth) {
       return false
     }
 
