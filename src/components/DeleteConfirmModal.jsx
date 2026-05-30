@@ -1,6 +1,6 @@
 import { getMonthKey } from '../store/useObligationsStore'
 
-function DeleteConfirmModal({ isOpen, onClose, onDelete, onDeleteFromMonth, obligation, currentDate }) {
+function DeleteConfirmModal({ isOpen, onClose, onDelete, onDeleteFromMonth, onHideThisMonth, obligation, currentDate }) {
   if (!isOpen || !obligation) return null
 
   const monthName = currentDate.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
@@ -9,8 +9,8 @@ function DeleteConfirmModal({ isOpen, onClose, onDelete, onDeleteFromMonth, obli
   console.log('[DELETE_MODAL] Opening for:', obligation.name, '| month:', monthName)
 
   const handleDeleteThisTime = () => {
-    console.log('[DELETE_MODAL] Delete this time only')
-    onDelete(obligation.id, monthKey)
+    console.log('[DELETE_MODAL] Hide this month only')
+    onHideThisMonth(obligation.id, monthKey)
     onClose()
   }
 

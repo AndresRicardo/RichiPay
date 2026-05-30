@@ -97,6 +97,11 @@ function AppContent() {
     await removeObligation(id)
   }
 
+  const handleHideThisMonth = async (id, monthKey) => {
+    console.log('[APP] Hide this month:', id, monthKey)
+    await hideObligationForMonth(id, monthKey)
+  }
+
   const handleDeleteFromMonth = async (id, fromDate) => {
     console.log('[APP] Delete from month:', id, fromDate)
     await deleteFromMonth(id, fromDate)
@@ -166,6 +171,7 @@ function AppContent() {
         onClose={handleCloseDeleteModal}
         onDelete={handleDeleteCompletely}
         onDeleteFromMonth={handleDeleteFromMonth}
+        onHideThisMonth={handleHideThisMonth}
         obligation={deleteModalData.obligation}
         currentDate={currentDate}
       />
