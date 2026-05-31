@@ -28,49 +28,49 @@ function DeleteConfirmModal({ isOpen, onClose, onDelete, onDeleteFromMonth, onHi
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="relative bg-white rounded-xl w-full max-w-sm shadow-xl"
+        className="relative glass-card w-full max-w-sm shadow-[0_0_40px_rgba(255,51,102,0.15)] animate-fade-in-up"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Eliminar obligación
+          <h3 className="text-xl font-semibold text-white mb-3 tracking-wider" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+            ELIMINAR OBLIGACIÓN
           </h3>
-          <p className="text-gray-600 mb-1">
-            ¿Qué deseas hacer con <span className="font-medium">"{obligation.name}"</span>?
+          <p className="text-[var(--text-secondary)] mb-2">
+            ¿Qué deseas hacer con <span className="text-white font-semibold">"{obligation.name}"</span>?
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-[var(--text-muted)] mb-6">
             Visible en {monthName}
           </p>
 
           <div className="space-y-3">
             <button
               onClick={handleDeleteThisTime}
-              className="w-full flex flex-col items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-[#10b981] transition-colors text-left"
+              className="w-full flex flex-col items-start p-4 border border-[rgba(0,245,255,0.2)] rounded-lg hover:bg-[rgba(0,245,255,0.05)] hover:border-[rgba(0,245,255,0.4)] transition-all duration-300 text-left group"
             >
-              <span className="font-medium text-gray-800">Eliminar solo esta vez</span>
-              <span className="text-sm text-gray-500">
+              <span className="font-semibold text-white group-hover:text-[var(--neon-cyan)] transition-colors" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Eliminar solo esta vez</span>
+              <span className="text-sm text-[var(--text-muted)] mt-1">
                 Se elimina solo para {monthName}. Volverá a aparecer en meses futuros.
               </span>
             </button>
 
             <button
               onClick={handleDeleteFromMonth}
-              className="w-full flex flex-col items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-[#10b981] transition-colors text-left"
+              className="w-full flex flex-col items-start p-4 border border-[rgba(180,0,255,0.2)] rounded-lg hover:bg-[rgba(180,0,255,0.05)] hover:border-[rgba(180,0,255,0.4)] transition-all duration-300 text-left group"
             >
-              <span className="font-medium text-gray-800">Eliminar de aquí en adelante</span>
-              <span className="text-sm text-gray-500">
+              <span className="font-semibold text-white group-hover:text-[var(--neon-magenta)] transition-colors" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Eliminar de aquí en adelante</span>
+              <span className="text-sm text-[var(--text-muted)] mt-1">
                 Deja de mostrarse desde {monthName}. Los datos históricos se mantienen.
               </span>
             </button>
 
             <button
               onClick={handleDeleteCompletely}
-              className="w-full flex flex-col items-start p-4 border border-red-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors text-left"
+              className="w-full flex flex-col items-start p-4 border border-[rgba(255,51,102,0.3)] rounded-lg hover:bg-[rgba(255,51,102,0.1)] hover:border-[var(--neon-red)] transition-all duration-300 text-left group"
             >
-              <span className="font-medium text-red-600">Eliminar por completo</span>
-              <span className="text-sm text-red-400">
+              <span className="font-semibold text-[var(--neon-red)] group-hover:text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Eliminar por completo</span>
+              <span className="text-sm text-[var(--text-muted)] mt-1">
                 Se elimina de la base de datos. No se puede deshacer.
               </span>
             </button>
@@ -78,9 +78,10 @@ function DeleteConfirmModal({ isOpen, onClose, onDelete, onDeleteFromMonth, onHi
 
           <button
             onClick={onClose}
-            className="w-full mt-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            className="w-full mt-5 py-3 text-[var(--text-secondary)] bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg hover:bg-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.2)] transition-all duration-300 font-medium tracking-wider"
+            style={{ fontFamily: 'Rajdhani, sans-serif' }}
           >
-            Cancelar
+            CANCELAR
           </button>
         </div>
       </div>
