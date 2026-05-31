@@ -309,7 +309,7 @@ const useObligationsStore = create((set, get) => ({
       result: currentYearMonth >= startYearMonth ? 'HIDE' : 'SHOW'
     })
 
-    if (startYearMonth && currentYearMonth >= startYearMonth) {
+    if (startYearMonth && currentYearMonth < startYearMonth) {
       return false
     }
 
