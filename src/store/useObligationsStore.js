@@ -289,11 +289,8 @@ const useObligationsStore = create((set, get) => ({
     return payment?.paid || false
   },
 
-  isHidden: (obligationId, monthKey) => {
-    const { hiddenObligations } = get()
-    return hiddenObligations.some(
-      (h) => h.obligation_id === obligationId && h.month_key === monthKey
-    )
+  getHiddenObligations: () => {
+    return get().hiddenObligations
   },
 
   shouldShowObligation: (obligation, currentDate) => {

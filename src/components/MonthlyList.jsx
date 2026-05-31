@@ -4,8 +4,8 @@ import useObligationsStore, { getMonthKey } from '../store/useObligationsStore'
 function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
   const obligations = useObligationsStore((state) => state.obligations)
   const payments = useObligationsStore((state) => state.payments)
+  const hiddenObligations = useObligationsStore((state) => state.hiddenObligations)
   const shouldShowObligation = useObligationsStore((state) => state.shouldShowObligation)
-  const isHidden = useObligationsStore((state) => state.isHidden)
   const monthName = currentDate.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })
   const monthKey = getMonthKey(currentDate)
 
@@ -15,7 +15,7 @@ function MonthlyList({ currentDate, onEdit, onDelete, onTogglePayment }) {
     if (!shouldShowObligation(ob, currentDate)) {
       return false
     }
-    if (isHidden(ob.id, monthKey)) {
+    if (hiddenObligations.some((h) => h.obligation_id === ob.id && h.month_key === monthKey)) {
       console.log('[LIST] Filtering hidden:', ob.name)
       return false
     }
