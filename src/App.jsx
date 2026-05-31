@@ -20,7 +20,6 @@ function AppContent() {
 
   const fetchData = useObligationsStore((state) => state.fetchData)
   const clearData = useObligationsStore((state) => state.clearData)
-  const initialized = useObligationsStore((state) => state.initialized)
 
   useEffect(() => {
     console.log('[APP] User changed:', user?.email, 'authenticated:', isAuthenticated)
@@ -29,7 +28,7 @@ function AppContent() {
     } else {
       clearData()
     }
-  }, [user, isAuthenticated])
+  }, [user, isAuthenticated, fetchData, clearData])
 
   const addObligation = useObligationsStore((state) => state.addObligation)
   const editObligation = useObligationsStore((state) => state.editObligation)
@@ -160,6 +159,7 @@ function AppContent() {
         onClose={handleClose}
         onSave={handleSave}
         initialData={editingObligation}
+        currentDate={currentDate}
       />
       <HistoryView
         isOpen={historyOpen}

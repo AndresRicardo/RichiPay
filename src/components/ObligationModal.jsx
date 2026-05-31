@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { getMonthKey } from "../store/useObligationsStore"
 
 const MONTHS = [
@@ -16,27 +16,22 @@ const MONTHS = [
   { value: 12, label: "Dic" },
 ]
 
-function ObligationModal({ isOpen, onClose, onSave, initialData }) {
+function ObligationModal({ isOpen, onClose, onSave, initialData, currentDate }) {
   const isEdit = Boolean(initialData)
-  console.log("[MODAL] Opening:", isEdit ? "EDIT" : "CREATE", initialData)
+  console.log("[MODAL] Opening:", isEdit ? "EDIT" : "CREATE", initialData, "| currentDate:", currentDate)
 
-  const [type, setType] = useState("recurring")
-  const [startMonth, setStartMonth] = useState("")
-  const [applicableMonths, setApplicableMonths] = useState([])
-
-  useEffect(() => {
-    if (isOpen) {
-      if (isEdit && initialData) {
-        setType(initialData.type || "recurring")
-        setStartMonth(initialData.start_month || "")
-        setApplicableMonths(initialData.applicable_months || [])
-      } else {
-        setType("recurring")
-        setStartMonth(getMonthKey(new Date()))
-        setApplicableMonths([])
-      }
-    }
-  }, [isOpen, isEdit, initialData])
+  const [type, setType] = useState(() => {
+    if (isEdit && initialData) return initialData.type || "recurring"
+    return "recurring"
+  })
+  const [startMonth, setStartMonth] = useState(() => {
+    if (isEdit && initialData) return initialData.start_month || ""
+    return getMonthKey(currentDate)
+  })
+  const [applicableMonths, setApplicableMonths] = useState(() => {
+    if (isEdit && initialData) return initialData.applicable_months || []
+    return []
+  })
 
   const handleMonthToggle = (month) => {
     setApplicableMonths((prev) =>
@@ -60,26 +55,26 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <div
-        className="relative bg-white rounded-xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto"
+        className="relative glass-card w-full max-w-md shadow-[0_0_40px_rgba(0,245,255,0.15)] max-h-[90vh] flex flex-col animate-fade-in-up"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-4 border-b border-gray-100 sticky top-0 bg-white">
-          <h3 className="text-lg font-semibold text-gray-800">
-            {isEdit ? "Editar obligación" : "Nueva obligación"}
+        <div className="flex justify-between items-center p-4 border-b border-[rgba(0,245,255,0.15)] bg-[rgba(18,18,26,0.95)] backdrop-blur-sm sticky top-0 z-10">
+          <h3 className="text-lg font-semibold text-white" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+            {isEdit ? "EDITAR OBLIGACIÓN" : "NUEVA OBLIGACIÓN"}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+            className="text-[var(--text-muted)] hover:text-[var(--neon-cyan)] text-2xl leading-none transition-colors duration-300"
           >
             ×
           </button>
         </div>
-        <form id="obligation-form" className="p-4 space-y-4">
+        <form id="obligation-form" className="flex-1 overflow-y-auto p-4 space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre
+            <label htmlFor="name" className="block text-xs font-medium text-[var(--text-secondary)] mb-1 tracking-wider">
+              NOMBRE
             </label>
             <input
               type="text"
@@ -87,13 +82,13 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
               name="name"
               defaultValue={initialData?.name}
               required
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:border-transparent"
+              className="w-full px-3 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,245,255,0.2)] rounded-lg text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--neon-cyan)] focus:shadow-[0_0_10px_rgba(0,245,255,0.2)] transition-all duration-300 text-sm"
               placeholder="Ej: Arriendo"
             />
           </div>
           <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-              Valor (COP)
+            <label htmlFor="amount" className="block text-xs font-medium text-[var(--text-secondary)] mb-1 tracking-wider">
+              VALOR (COP)
             </label>
             <input
               type="number"
@@ -102,13 +97,13 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
               defaultValue={initialData?.amount}
               required
               min="1"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:border-transparent"
+              className="w-full px-3 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,245,255,0.2)] rounded-lg text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--neon-cyan)] focus:shadow-[0_0_10px_rgba(0,245,255,0.2)] transition-all duration-300 text-sm"
               placeholder="Ej: 1500000"
             />
           </div>
           <div>
-            <label htmlFor="dueDay" className="block text-sm font-medium text-gray-700 mb-1">
-              Día límite de pago
+            <label htmlFor="dueDay" className="block text-xs font-medium text-[var(--text-secondary)] mb-1 tracking-wider">
+              DÍA LÍMITE
             </label>
             <input
               type="number"
@@ -118,43 +113,45 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
               required
               min="1"
               max="31"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:border-transparent"
+              className="w-full px-3 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,245,255,0.2)] rounded-lg text-white placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--neon-cyan)] focus:shadow-[0_0_10px_rgba(0,245,255,0.2)] transition-all duration-300 text-sm"
               placeholder="Ej: 5"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2 tracking-wider">
+              TIPO
+            </label>
+            <div className="flex gap-3">
+              <label className="flex items-center gap-2 cursor-pointer group flex-1">
                 <input
                   type="radio"
                   name="type"
                   value="recurring"
                   checked={type === "recurring"}
                   onChange={() => setType("recurring")}
-                  className="w-4 h-4 text-[#10b981] focus:ring-[#10b981]"
+                  className="w-4 h-4 text-[var(--neon-cyan)] focus:ring-[var(--neon-cyan)] focus:ring-offset-0 bg-transparent border-2 border-[rgba(0,245,255,0.4)]"
                 />
-                <span className="text-sm text-gray-700">Recurrente</span>
+                <span className="text-xs text-[var(--text-secondary)] group-hover:text-white transition-colors">Recurrente</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer group flex-1">
                 <input
                   type="radio"
                   name="type"
                   value="occasional"
                   checked={type === "occasional"}
                   onChange={() => setType("occasional")}
-                  className="w-4 h-4 text-[#10b981] focus:ring-[#10b981]"
+                  className="w-4 h-4 text-[var(--neon-cyan)] focus:ring-[var(--neon-cyan)] focus:ring-offset-0 bg-transparent border-2 border-[rgba(180,0,255,0.4)]"
                 />
-                <span className="text-sm text-gray-700">Ocasional</span>
+                <span className="text-xs text-[var(--text-secondary)] group-hover:text-white transition-colors">Ocasional</span>
               </label>
             </div>
           </div>
 
           {type === "recurring" && (
             <div>
-              <label htmlFor="startMonth" className="block text-sm font-medium text-gray-700 mb-1">
-                Mostrar desde mes
+              <label htmlFor="startMonth" className="block text-xs font-medium text-[var(--text-secondary)] mb-1 tracking-wider">
+                MOSTRAR DESDE MES
               </label>
               <input
                 type="month"
@@ -162,24 +159,24 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
                 name="startMonth"
                 value={startMonth}
                 onChange={(e) => setStartMonth(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#10b981] focus:border-transparent"
+                className="w-full px-3 py-2 bg-[rgba(255,255,255,0.05)] border border-[rgba(0,245,255,0.2)] rounded-lg text-white focus:outline-none focus:border-[var(--neon-cyan)] focus:shadow-[0_0_10px_rgba(0,245,255,0.2)] transition-all duration-300 text-sm"
               />
             </div>
           )}
 
           {type === "occasional" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Meses en que aplica
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-2 tracking-wider">
+                MESES EN QUE APLICA
               </label>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {MONTHS.map((month) => (
                   <label
                     key={month.value}
-                    className={`flex flex-col items-center p-2 border rounded-lg cursor-pointer transition-colors ${
+                    className={`flex flex-col items-center p-2 border rounded-lg cursor-pointer transition-all duration-300 ${
                       applicableMonths.includes(month.value)
-                        ? "border-[#10b981] bg-emerald-50"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-[var(--neon-cyan)] bg-[rgba(0,245,255,0.1)] shadow-[0_0_8px_rgba(0,245,255,0.2)]"
+                        : "border-[rgba(255,255,255,0.1)] hover:border-[rgba(0,245,255,0.3)]"
                     }`}
                   >
                     <input
@@ -188,36 +185,38 @@ function ObligationModal({ isOpen, onClose, onSave, initialData }) {
                       onChange={() => handleMonthToggle(month.value)}
                       className="sr-only"
                     />
-                    <span className="text-xs font-medium">{month.label}</span>
+                    <span className="text-xs font-semibold tracking-wider" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{month.label}</span>
                   </label>
                 ))}
               </div>
               {applicableMonths.length === 0 && (
-                <p className="text-xs text-red-500 mt-1">
+                <p className="text-xs text-[var(--neon-red)] mt-1">
                   Selecciona al menos un mes
                 </p>
               )}
             </div>
           )}
-
-          <div className="flex gap-3 pt-4">
+        </form>
+        <div className="p-4 border-t border-[rgba(0,245,255,0.15)] bg-[rgba(18,18,26,0.95)] backdrop-blur-sm sticky bottom-0">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="flex-1 px-4 py-2.5 text-[var(--text-secondary)] bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-lg hover:bg-[rgba(255,255,255,0.1)] hover:border-[rgba(255,255,255,0.2)] transition-all duration-300 text-sm font-medium"
             >
-              Cancelar
+              CANCELAR
             </button>
             <button
               type="button"
               onClick={handleSubmit}
               disabled={type === "occasional" && applicableMonths.length === 0}
-              className="flex-1 px-4 py-2 text-white bg-[#10b981] rounded-lg hover:bg-emerald-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2.5 text-[#0a0a0f] bg-[var(--neon-cyan)] rounded-lg hover:shadow-[0_0_20px_rgba(0,245,255,0.5)] transition-all duration-300 text-sm font-semibold tracking-wider disabled:bg-[var(--text-muted)] disabled:cursor-not-allowed disabled:shadow-none"
+              style={{ fontFamily: 'Rajdhani, sans-serif' }}
             >
-              {isEdit ? "Guardar" : "Crear"}
+              {isEdit ? "GUARDAR" : "CREAR"}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

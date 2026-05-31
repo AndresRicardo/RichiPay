@@ -38,21 +38,25 @@ function Header() {
   }
 
   return (
-    <header className="bg-[#1e3a5f] text-white px-4 py-4 shadow-lg">
-      <div className="max-w-lg mx-auto flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">RichiPay</h1>
+    <header className="relative bg-gradient-to-r from-[#0a0a0f] via-[#12121a] to-[#0a0a0f] border-b border-[rgba(0,245,255,0.2)]">
+      <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,245,255,0.05)] via-transparent to-[rgba(180,0,255,0.05)] pointer-events-none" />
+      <div className="relative max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-wider" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+          <span className="neon-text-cyan">Richi</span>
+          <span className="text-white">Pay</span>
+        </h1>
 
         {user && (
           <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[rgba(0,245,255,0.3)] hover:border-[rgba(0,245,255,0.6)] hover:bg-[rgba(0,245,255,0.1)] transition-all duration-300"
             >
-              <span className="text-sm font-medium hidden sm:inline">
+              <span className="text-sm font-medium hidden sm:inline text-[var(--text-secondary)]">
                 {getUserDisplayName()}
               </span>
               <svg
-                className={`w-5 h-5 transition-transform ${menuOpen ? 'rotate-180' : ''}`}
+                className={`w-5 h-5 text-[var(--neon-cyan)] transition-transform duration-300 ${menuOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -62,21 +66,21 @@ function Header() {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-800 truncate">
+              <div className="absolute right-0 mt-3 w-64 glass-card animate-fade-in-up z-50">
+                <div className="px-4 py-4 border-b border-[rgba(0,245,255,0.15)]">
+                  <p className="text-sm font-semibold text-white truncate" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
                     {getUserDisplayName()}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-[var(--text-muted)] truncate mt-1">
                     {user?.email}
                   </p>
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] hover:bg-[rgba(0,245,255,0.05)] transition-all duration-300"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

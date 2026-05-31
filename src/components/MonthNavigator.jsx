@@ -15,7 +15,7 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory, 
       if (inputRef.current) {
         try {
           inputRef.current.showPicker?.()
-        } catch (err) {
+        } catch {
           console.log('[NAVIGATOR] showPicker not supported')
           inputRef.current.focus()
         }
@@ -34,10 +34,10 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory, 
   }
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+    <div className="glass-card mx-4 mt-4 mb-2 rounded-2xl px-4 py-3 flex items-center justify-between border-[rgba(0,245,255,0.15)]">
       <button
         onClick={onPrevMonth}
-        className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+        className="p-2 text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] hover:bg-[rgba(0,245,255,0.1)] rounded-lg transition-all duration-300 border border-transparent hover:border-[rgba(0,245,255,0.3)]"
         aria-label="Mes anterior"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,23 +45,24 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory, 
         </svg>
       </button>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
           onClick={() => {
             console.log('[NAVIGATOR] Go to today clicked')
             onGoToToday()
           }}
-          className="text-xs px-2 py-1 text-[#10b981] hover:bg-emerald-50 rounded-lg transition-colors font-medium"
+          className="text-xs px-3 py-1 text-[var(--neon-cyan)] hover:bg-[rgba(0,245,255,0.1)] rounded-lg transition-all duration-300 font-semibold border border-[rgba(0,245,255,0.3)] hover:border-[var(--neon-cyan)] tracking-wider"
           aria-label="Ir a hoy"
           title="Ir a hoy"
         >
-          Hoy
+          HOY
         </button>
-        
+
         <div className="relative">
           <h2
             onClick={handleTitleClick}
-            className="text-lg font-semibold text-gray-700 capitalize cursor-pointer hover:text-[#1e3a5f] hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors"
+            className="text-lg font-semibold text-white capitalize cursor-pointer hover:text-[var(--neon-cyan)] px-3 py-1 rounded-lg transition-all duration-300"
+            style={{ fontFamily: 'Rajdhani, sans-serif' }}
           >
             {monthName}
           </h2>
@@ -81,7 +82,7 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory, 
       <div className="flex items-center gap-1">
         <button
           onClick={onOpenHistory}
-          className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] hover:bg-[rgba(0,245,255,0.1)] rounded-lg transition-all duration-300 border border-transparent hover:border-[rgba(0,245,255,0.3)]"
           aria-label="Ver historial"
           title="Historial"
         >
@@ -91,7 +92,7 @@ function MonthNavigator({ currentDate, onPrevMonth, onNextMonth, onOpenHistory, 
         </button>
         <button
           onClick={onNextMonth}
-          className="p-2 text-gray-500 hover:text-[#1e3a5f] hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-[var(--text-secondary)] hover:text-[var(--neon-cyan)] hover:bg-[rgba(0,245,255,0.1)] rounded-lg transition-all duration-300 border border-transparent hover:border-[rgba(0,245,255,0.3)]"
           aria-label="Mes siguiente"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
