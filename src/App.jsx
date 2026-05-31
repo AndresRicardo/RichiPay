@@ -40,8 +40,7 @@ function AppContent() {
   const handlePrevMonth = () => {
     console.log('[APP] Prev month')
     setCurrentDate((prev) => {
-      const newDate = new Date(prev)
-      newDate.setMonth(newDate.getMonth() - 1)
+      const newDate = new Date(prev.getFullYear(), prev.getMonth() - 1, 1)
       return newDate
     })
   }
@@ -49,8 +48,7 @@ function AppContent() {
   const handleNextMonth = () => {
     console.log('[APP] Next month')
     setCurrentDate((prev) => {
-      const newDate = new Date(prev)
-      newDate.setMonth(newDate.getMonth() + 1)
+      const newDate = new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
       return newDate
     })
   }
